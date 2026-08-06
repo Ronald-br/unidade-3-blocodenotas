@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Note;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,5 +46,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Um usuário pode possuir várias notas.
+     */
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
     }
 }
