@@ -1,59 +1,245 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema Web - Bloco de Notas Seguro
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Descrição do Sistema
 
-## About Laravel
+Sistema web desenvolvido utilizando o framework Laravel para gerenciamento de notas pessoais de usuários autenticados.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+A aplicação permite que usuários possam criar, visualizar, editar e excluir suas próprias notas, garantindo privacidade e segurança das informações armazenadas.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+O projeto foi desenvolvido para a disciplina de Programação Web I do curso de Tecnologia em Análise e Desenvolvimento de Sistemas do Instituto Federal do Ceará - Campus Boa Viagem.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Funcionalidades
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+* Cadastro de usuários;
+* Login e autenticação;
+* Dashboard protegido;
+* Criação de notas;
+* Listagem das notas do usuário autenticado;
+* Visualização individual de notas;
+* Edição de notas;
+* Exclusão lógica utilizando Soft Delete;
+* Criptografia do conteúdo das notas;
+* Controle de autoria através do relacionamento entre usuários e notas.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Tecnologias Utilizadas
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* PHP 8.x
+* Laravel
+* Laravel Breeze
+* MySQL
+* Blade Templates
+* Tailwind CSS
+* XAMPP
+* Git e GitHub
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Segurança
 
-## Contributing
+## Autenticação
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+O sistema utiliza o sistema de autenticação padrão do Laravel através do Laravel Breeze.
 
-## Code of Conduct
+As páginas da aplicação são protegidas utilizando o middleware `auth`, permitindo acesso somente para usuários autenticados.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+As senhas dos usuários são armazenadas utilizando o sistema de hash seguro padrão do Laravel (bcrypt).
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Criptografia das Notas
 
-## License
+O campo `conteudo` da tabela `notes` é armazenado utilizando criptografia disponibilizada pelo Laravel.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Antes de salvar uma nota no banco de dados, o conteúdo é criptografado utilizando:
+
+```php
+Crypt::encryptString()
+```
+
+Ao visualizar uma nota, o sistema realiza a descriptografia utilizando:
+
+```php
+Crypt::decryptString()
+```
+
+Dessa forma, o banco de dados não armazena o texto original das notas, protegendo informações sensíveis.
+
+Exemplo:
+
+Conteúdo original:
+
+```
+Minha senha do sistema é teste123
+```
+
+Conteúdo armazenado no banco:
+
+```
+eyJpdiI6IkcvQTZUeUJWU0RlRkFXK0loSE1OSUE9PS...
+```
+
+---
+
+# Banco de Dados
+
+## Tabela users
+
+Armazena os dados dos usuários:
+
+* id
+* name
+* email
+* password
+* created_at
+* updated_at
+
+## Tabela notes
+
+Armazena os dados das notas:
+
+* id
+* user_id
+* titulo
+* conteudo (criptografado)
+* created_at
+* updated_at
+* deleted_at
+
+Relacionamento:
+
+* Um usuário possui várias notas;
+* Uma nota pertence a um usuário.
+
+---
+
+# Soft Delete e Auditoria
+
+O sistema utiliza o recurso Soft Delete do Laravel.
+
+Quando uma nota é excluída, ela não é removida definitivamente do banco de dados. A exclusão é registrada através do campo:
+
+```
+deleted_at
+```
+
+O sistema mantém registro das operações através dos campos:
+
+* created_at - data de criação;
+* updated_at - data de atualização;
+* deleted_at - data de exclusão.
+
+---
+
+# Como executar o projeto
+
+## 1. Clonar o repositório
+
+```bash
+git clone https://github.com/Ronald-br/unidade-3-blocodenotas.git
+```
+
+## 2. Acessar a pasta do projeto
+
+```bash
+cd unidade-3-blocodenotas
+```
+
+## 3. Instalar dependências
+
+Instalar dependências PHP:
+
+```bash
+composer install
+```
+
+Instalar dependências do Node:
+
+```bash
+npm install
+```
+
+---
+
+## 4. Configurar o arquivo .env
+
+Criar uma cópia do arquivo de configuração:
+
+```bash
+cp .env.example .env
+```
+
+Configurar o banco de dados:
+
+```
+DB_DATABASE=bloco_notas
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+---
+
+## 5. Gerar chave da aplicação
+
+```bash
+php artisan key:generate
+```
+
+---
+
+## 6. Executar migrations
+
+```bash
+php artisan migrate
+```
+
+---
+
+## 7. Executar o projeto
+
+Iniciar o servidor Laravel:
+
+```bash
+php artisan serve
+```
+
+Acessar no navegador:
+
+```
+http://127.0.0.1:8000
+```
+
+---
+
+# Telas do Sistema
+
+Adicionar prints das principais telas:
+
+* Tela de login;
+* Cadastro de usuário;
+* Dashboard;
+* Lista de notas;
+* Cadastro de nota;
+* Visualização de nota;
+* Banco de dados mostrando o conteúdo criptografado.
+
+---
+
+# Feito por : 
+
+Ronald Vieira
+
+Curso:
+Tecnologia em Análise e Desenvolvimento de Sistemas
+
+Instituição:
+Instituto Federal do Ceará - Campus Boa Viagem
+
+Disciplina:
+Programação Web I
+
+Repositório:
+https://github.com/Ronald-br/unidade-3-blocodenotas.git
