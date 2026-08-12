@@ -1,38 +1,50 @@
-<x-app-layout>
+@extends('layouts.master')
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Visualizar Nota
-        </h2>
-    </x-slot>
+@section('title', 'Visualizar Nota')
 
+@section('content')
 
-    <div class="py-12">
+    <div class="max-w-4xl mx-auto">
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg">
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+                <h1 class="text-2xl font-bold mb-4">
+                    {{ $note->titulo }}
+                </h1>
 
-
-                    <h1 class="text-2xl font-bold mb-4">
-                        {{ $note->titulo }}
-                    </h1>
-
-
-                    <p class="mb-6">
+                <div class="mb-6">
+                    <p class="whitespace-pre-line">
                         {{ $note->conteudo }}
                     </p>
+                </div>
 
+                <div class="text-sm text-gray-500 dark:text-gray-400 mb-6 space-y-1">
+                    <p>
+                        Criada em:
+                        {{ $note->created_at->format('d/m/Y H:i') }}
+                    </p>
 
-                    <a href="{{ route('notes.index') }}"
-                       class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                    <p>
+                        Atualizada em:
+                        {{ $note->updated_at->format('d/m/Y H:i') }}
+                    </p>
+                </div>
 
-                        Voltar
+                <div class="flex gap-3">
 
+                    <a
+                        href="{{ route('notes.edit', $note) }}"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded">
+                        Editar
                     </a>
 
+                    <a
+                        href="{{ route('notes.index') }}"
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">
+                        Voltar
+                    </a>
 
                 </div>
 
@@ -42,4 +54,4 @@
 
     </div>
 
-</x-app-layout>
+@endsection
